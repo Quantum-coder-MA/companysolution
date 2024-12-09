@@ -1,9 +1,9 @@
 # views.py
 from rest_framework import viewsets
-from .models import Produit, Secteur, Representative, Commercialization, Gestion
+from .models import Produit, Secteur, Representative, Commercialization, Gestion , Attachment
 from .serializers import (
     ProduitSerializer, SecteurSerializer, RepresentativeSerializer, 
-    CommercializationSerializer, GestionSerializer
+    CommercializationSerializer, GestionSerializer ,AttachmentSerializer
 )
 
 class ProduitViewSet(viewsets.ModelViewSet):
@@ -26,9 +26,11 @@ class GestionViewSet(viewsets.ModelViewSet):
     queryset = Gestion.objects.all()
     serializer_class = GestionSerializer
     
-
+class AttachmentViewSet(viewsets.ModelViewSet):
+    queryset = Attachment.objects.all()
+    serializer_class = AttachmentSerializer
 
 from django.shortcuts import render
 
 def dashboard_view(request):
-    return render(request, 'index.html')
+    return render(request, 'page.html')

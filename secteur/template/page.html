@@ -84,7 +84,29 @@
                         </div>
                     </div>
                 </div>
-
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">Attachments</div>
+                            <div class="card-body">
+                                <table class="table" id="attachments-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Representative</th>
+                                            <th>Sector</th>
+                                            <th>Product</th>
+                                            <th>Commercialization</th>
+                                            <th>Attachment</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="attachments-list">
+                                        <!-- Dynamic content will be inserted here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- Detailed Data Tables -->
                 <div class="row">
                     <div class="col-md-6">
@@ -131,7 +153,10 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <div id="loading-spinner"></div>
+
     <script>
+
         // Show a loading spinner during initialization
         document.addEventListener('DOMContentLoaded', () => {
             const spinner = document.getElementById('loading-spinner');
@@ -143,6 +168,6 @@
             }, 2000); // Adjust duration as needed
         });
     </script>
-    <script src="client_interface.js"></script>
+    <script src="../static/js/client_interface.js"></script>
 </body>
 </html>

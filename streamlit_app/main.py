@@ -147,15 +147,97 @@ def assign_representative():
             else:
                 st.warning("Product is not commercialized in this sector!")
 
+
+def list_assignement():
+    """Display a list of products"""
+    st.header("assignement")
+    products = fetch_data("produits/")
+    sectors = fetch_data("secteurs/")
+    representatives = fetch_data("representatives/")   
+    if products:
+        df = pd.DataFrame(products)
+        st.dataframe(df[['nom', 'label', 'price']])
+    else:
+        st.write("No products found.") 
+    if sectors:
+        ef = pd.DataFrame(sectors)
+        st.dataframe(ef[['nom','ville','region']])
+    else:
+        st.write("No products found.")         
+    if representatives:
+        ik = pd.DataFrame(representatives)
+        st.dataframe(ik[['nom','prenom']])
+    else:
+        st.write("No representatives found.")          
+
+
+
+
+
+
+
+
+def list_attachement():
+    """Display a list of sectors"""
+    
+    
+    
+    
+    st.header("attachement List")
+    attachement = fetch_data("attachement/")
+    
+    if attachement:
+        df = pd.DataFrame(attachement)
+        st.dataframe(df[['nom', 'ville', 'region', 'produit' 'price','secteur', 'representative'  ]])
+    else:
+        st.write("No sectors found.")
+
+
+
 def view_product_management():
     """View product management details"""
+    """View product management details"""
     st.header("Product Management Details")
-    gestions = fetch_data("gestions/")
     
+    # Fetch data from the API
+    gestions = fetch_data("gestions/")
+
     if gestions:
-        # Create a more detailed dataframe
-        df = pd.DataFrame(gestions)
-        st.dataframe(df)
+        # If the data exists, process it
+        try:
+            # Create a detailed dataframe
+            cleaned_data = []
+            for gestion in gestions:
+                # Assuming 'produit' and 'contact' are already dictionaries
+                produit_info = gestion.get("produit", {})
+                representative_info = gestion.get("representative", {})
+                secteur_info = gestion.get("secteur", {})             
+                # Build a cleaned-up product dictionary
+            
+
+                # Build a cleaned-up product dictionary
+                product_info = {
+                    "Product ID": produit_info.get("id", "N/A"),
+                    "Product Name": produit_info.get("nom", "N/A"),
+                    "Product Label": produit_info.get("label", "N/A"),
+                    "Product Price": produit_info.get("price", "N/A"),
+                    "Region": secteur_info.get("region", "N/A"),
+                    "City": secteur_info.get("ville", "N/A"),
+                    "Address": representative_info.get("adress", "N/A"),
+                    "Email": representative_info.get("email", "N/A"),
+                    "Contact Name": representative_info.get("nom", "N/A"),
+                    "Contact Phone": representative_info.get("telephone", "N/A"),
+                }
+                cleaned_data.append(product_info)
+
+            # Convert cleaned data into a DataFrame
+            df = pd.DataFrame(cleaned_data)
+
+            # Display the dataframe in Streamlit
+            st.dataframe(df)
+
+        except Exception as e:
+            st.error(f"Error processing data: {e}")
     else:
         st.write("No product management records found.")
 
@@ -166,18 +248,21 @@ def main():
     # Sidebar navigation
     menu = [
         "List Products", 
+
+
         "List Sectors", 
         "List Representatives", 
         "Add Product", 
         "Add Sector", 
-        "Assign Representative",
         "View Product Management"
     ]
     choice = st.sidebar.selectbox("Navigation", menu)
     
     # Routing based on menu selection
     if choice == "List Products":
-        list_products()
+        list_products()        
+        
+
     elif choice == "List Sectors":
         list_sectors()
     elif choice == "List Representatives":
@@ -186,10 +271,13 @@ def main():
         add_product()
     elif choice == "Add Sector":
         add_sector()
-    elif choice == "Assign Representative":
-        assign_representative()
+
     elif choice == "View Product Management":
         view_product_management()
 
 if __name__ == "__main__":
     main()
+    
+    
+    
+    

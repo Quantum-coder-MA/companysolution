@@ -6,7 +6,7 @@ from secteur.views import dashboard_view
 from rest_framework.routers import DefaultRouter
 from .views import (
     ProduitViewSet, SecteurViewSet, RepresentativeViewSet, 
-    CommercializationViewSet, GestionViewSet
+    CommercializationViewSet, GestionViewSet ,AttachmentViewSet
 )
 
 router = DefaultRouter()
@@ -15,6 +15,8 @@ router.register(r'secteurs', SecteurViewSet)
 router.register(r'representatives', RepresentativeViewSet)
 router.register(r'commercializations', CommercializationViewSet)
 router.register(r'gestions', GestionViewSet)
+router.register(r'attachments', AttachmentViewSet)
+
 
 urlpatterns = [
     path('api/', include(router.urls)),

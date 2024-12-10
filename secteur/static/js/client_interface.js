@@ -14,76 +14,108 @@ async function fetchData(endpoint) {
 
 // Update Dashboard Statistics
 async function updateDashboardStats() {
-    const Produit = await fetchData('produits/');
+    const produits = await fetchData('produits/');
     const secteurs = await fetchData('secteurs/');
     const representants = await fetchData('representatives/');
     const commercialisations = await fetchData('commercializations/');
 
-    document.getElementById('total-produits').textContent = Produit.length;
+    document.getElementById('total-produits').textContent = produits.length;
     document.getElementById('total-secteurs').textContent = secteurs.length;
     document.getElementById('total-representants').textContent = representants.length;
     document.getElementById('total-commercialisations').textContent = commercialisations.length;
 }
-// client_interface.js
-async function populateAttachmentsTable() {
-    const attachments = await fetchData('attachments/');
 
-    const attachmentsListElement = document.getElementById('attachments-list');
-    attachmentsListElement.innerHTML = '';
+// Client Interface for Attachments Table
+async function populateGestionsTable() {
+    // Fetch the gestions data
+    const gestions = await fetchData('gestions/');
+    const gestionsListElement = document.getElementById('gestions-list');
+    gestionsListElement.innerHTML = ''; // Clear existing entries
 
-    attachments.forEach(attachment => {
+    gestions.forEach(gestion => {
+        // Assuming 'gestion' contains nested fields like 'representative', 'secteur', and 'produit'
+        const representative = gestion.representative;
+        const secteur = gestion.secteur;
+        const produit = gestion.produit;
+
         const row = `
             <tr>
-                <td>${attachment.representative_name} ${attachment.representative_prenom}</td>
-                <td>${attachment.sector_name}</td>
-                <td>${attachment.product_name}</td>
-                <td>${attachment.commercialization_confirmed ? 'Confirmed' : 'Not Confirmed'}</td>
-                <td>${attachment.confirmed ? 'Confirmed' : 'Not Confirmed'}</td>
+                <td>${representative.nom} ${representative.prenom}</td>
+                <td>${secteur.ville}</td>
+                <td>${produit.nom}</td>
+                <td>${gestion.label ? 'Confirmed' : 'Not Confirmed'}</td>
+                <td>${gestion.price}</td>
             </tr>
         `;
-        attachmentsListElement.innerHTML += row;
+        gestionsListElement.innerHTML += row;
     });
 }
-// Populate Recent Products Table
-async function populateProduitTable() {
-    const Produit = await fetchData('produits/');
-    const ProduitListElement = document.getElementById('produits-list');
-    ProduitListElement.innerHTML = ''; // Clear existing entries
 
-    Produit.slice(0, 5).forEach(produit => {
+
+// Populate Recent Products Table
+async function populateProduitsTable() {
+    const produits = await fetchData('produits/');
+    const produitsListElement = document.getElementById('produits-list');
+    produitsListElement.innerHTML = ''; // Clear existing entries
+
+    produits.slice(0, 5).forEach(produit => {
         const row = `
             <tr>
                 <td>${produit.nom}</td>
-                <td>${produit.price} €</td>
+                <td>${produit.price} MAD</td>
                 <td>${produit.label}</td>
             </tr>
         `;
-        ProduitListElement.innerHTML += row;
+        produitsListElement.innerHTML += row;
     });
 }
 
 // Populate Representatives by Sector Table
 async function populateRepresentantsTable() {
+    // Assuming 'gestions' is an array of objects
     const gestions = await fetchData('gestions/');
     const representantsListElement = document.getElementById('representants-list');
     representantsListElement.innerHTML = ''; // Clear existing entries
 
-    const representantsMap = new Map();
-
+    // Iterate over each gestion object
     for (const gestion of gestions) {
-        const representantResponse = await fetchData(`representatives/${gestion.representative}/`);
-        const secteurResponse = await fetchData(`secteurs/${gestion.secteur}/`);
-        const produitResponse = await fetchData(`produits/${gestion.produit}/`);
+        // Extract representative, secteur, and produit data directly from the gestion object
+        const representant = gestion.representative;
+        const secteur = gestion.secteur;
+        const produit = gestion.produit;
 
+        // Build the table row entry
         const entry = `
             <tr>
-                <td>${representantResponse.nom} ${representantResponse.prenom}</td>
-                <td>${secteurResponse.nom}</td>
-                <td>${produitResponse.nom}</td>
+                <td>${representant.nom} ${representant.prenom}</td>
+                <td>${secteur.nom}</td>
+                <td>${produit.nom}</td>
             </tr>
         `;
+        
+        // Append the entry to the table
         representantsListElement.innerHTML += entry;
     }
+}
+
+
+// Populate Commercialization Status Table
+async function populateCommercializationTable() {
+    const commercializations = await fetchData('commercializations/');
+    const commercializationListElement = document.getElementById('commercializations-list');
+    commercializationListElement.innerHTML = ''; // Clear existing entries
+
+    commercializations.forEach(commercialization => {
+        const row = `
+            <tr>
+                <td>${commercialization.product_name}</td>
+                <td>${commercialization.sector_name}</td>
+                <td>${commercialization.representative_name}</td>
+                <td>${commercialization.confirmed ? 'Confirmed' : 'Not Confirmed'}</td>
+            </tr>
+        `;
+        commercializationListElement.innerHTML += row;
+    });
 }
 
 // Initialize Dashboard
@@ -91,7 +123,8 @@ async function initializeDashboard() {
     await updateDashboardStats();
     await populateProduitsTable();
     await populateRepresentantsTable();
-    await populateAttachmentsTable();
+    await populateGestionsTable();
+    await populateCommercializationTable(); // Add this new function
 }
 
 // Run initialization when DOM is fully loaded

@@ -1,0 +1,5 @@
+Django==4.2.6
+djangorestframework==3.14.0
+django-cors-headers==4.2.0
+streamlit==1.27.2
+requests==2.31.0
